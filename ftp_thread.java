@@ -41,6 +41,8 @@ final class ftp_thread implements Runnable{
 
             // each command should create a data socket and execute the command
 
+
+            System.out.println(clientCommand);
             // list command
             if (clientCommand.equals("list:")) {
 

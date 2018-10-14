@@ -7,7 +7,7 @@ import javax.swing.*;
 
 class ftp_client {
 
-    public static void main(String argv[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         String sentence;
         String modifiedSentence;
         boolean isOpen = true;
@@ -38,7 +38,7 @@ class ftp_client {
 
                 sentence = inFromUser.readLine();
 
-
+                System.out.println(sentence);
                 if (sentence.equals("list:")) {
 
                     int dataPort = controlPort + 2;

@@ -2,9 +2,9 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public final class ftp_server {
+public class ftp_server {
 
-    public static void main(String argv[]) throws Exception {
+    public static void main(String[] args) throws Exception{
 
         String fromClient;
         String clientCommand;
