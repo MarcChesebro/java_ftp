@@ -3,6 +3,7 @@ import java.net.*;
 import java.util.*;
 
 public final class ftp_server {
+
     public static void main(String argv[]) throws Exception {
 
         String fromClient;
@@ -26,39 +27,34 @@ public final class ftp_server {
             port = Integer.parseInt(frstln);
             clientCommand = tokens.nextToken();
 
+            // list command
             if (clientCommand.equals("list:")) {
 
                 Socket dataSocket = new Socket(connectionSocket.getInetAddress(), port);
                 DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
-                      ..........................
 
+                //TODO print list
+
+                dataSocket.close();
+                System.out.println("Data Socket closed");
+            }
+
+
+            if (clientCommand.equals("retr:")) {
 
             }
 
-            dataSocket.close();
-            System.out.println("Data Socket closed");
-        }
-        
-			......................
+            if (clientCommand.equals("stor:")) {
 
-        if (clientCommand.equals("retr:")) {
-            ..............................
-		    ..............................
-        }
+            }
 
-        if (clientCommand.equals("stor:")) {
-		  ........................
-		  ........................
-        }
+            if (clientCommand.equals("quit:")) {
 
-        if (clientCommand.equals("quit:")) {
-		  ........................
-		  ........................
-        }
+            }
 
-        if (clientCommand.equals("connect:")) {
-		  .........................
-		  .........................
+            if (clientCommand.equals("connect:")) {
+
+            }
         }
     }
 }
