@@ -42,32 +42,24 @@ public final class ftp_server {
 			......................
 
         if (clientCommand.equals("retr:")) {
-                ..............................
-		..............................
-<<<<<<< HEAD
-		}
+            ..............................
+		    ..............................
+        }
 
-		if(clientCommand.equals("stor:"))
-		{
+        if (clientCommand.equals("stor:")) {
 		  ........................
 		  ........................
-		}
+        }
 
-		if(clientCommand.equals("quit:"))
-		{
+        if (clientCommand.equals("quit:")) {
 		  ........................
 		  ........................
-		}
+        }
 
-		if(clientCommand.equals("connect:"))
-		{
+        if (clientCommand.equals("connect:")) {
 		  .........................
 		  .........................
-		}
-  }
-=======
         }
     }
->>>>>>> ec71ba401bc4ec382b6011bceecbf772a1e28734
 }
     
