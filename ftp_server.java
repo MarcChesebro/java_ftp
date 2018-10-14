@@ -15,48 +15,16 @@ public final class ftp_server {
         String frstln;
 
         while (true) {
+            //Wait for request at welcome socket
             Socket connectionSocket = welcomeSocket.accept();
 
-            DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+            //create a new thread for the user
+            user_thread = new ftp_thread(connectionSocket);
 
-            fromClient = inFromClient.readLine();
-
-            StringTokenizer tokens = new StringTokenizer(fromClient);
-            frstln = tokens.nextToken();
-            port = Integer.parseInt(frstln);
-            clientCommand = tokens.nextToken();
-
-            // list command
-            if (clientCommand.equals("list:")) {
-
-                Socket dataSocket = new Socket(connectionSocket.getInetAddress(), port);
-                DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
-
-                //TODO print list
-
-                dataSocket.close();
-                System.out.println("Data Socket closed");
-            }
-
-
-            if (clientCommand.equals("retr:")) {
-
-            }
-
-            if (clientCommand.equals("stor:")) {
-
-            }
-
-            if (clientCommand.equals("quit:")) {
-
-            }
-
-            if (clientCommand.equals("connect:")) {
-
-            }
+            // start the thread
+            user_thread.start();
         }
-	    
+
     }
 }
     
