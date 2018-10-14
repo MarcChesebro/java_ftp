@@ -1,10 +1,9 @@
 import java.io.*; 
 import java.net.*;
 import java.util.*;
-.................
-.................
 
-    
+public final class ftp_server {
+  public static void main(String argv[]) throws Exception {
 	
             String fromClient;
             String clientCommand;
@@ -49,4 +48,6 @@ import java.util.*;
                 ..............................
 		..............................
 		 }
+  }
+}
     
