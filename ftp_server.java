@@ -19,7 +19,8 @@ public final class ftp_server {
             Socket connectionSocket = welcomeSocket.accept();
 
             //create a new thread for the user
-            user_thread = new ftp_thread(connectionSocket);
+            ftp_thread userConnection = new ftp_thread(connectionSocket);
+            Thread user_thread = new Thread(userConnection);
 
             // start the thread
             user_thread.start();

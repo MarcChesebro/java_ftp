@@ -11,7 +11,7 @@ class ftp_client {
         String sentence;
         String modifiedSentence;
         boolean isOpen = true;
-        int number = 1;
+        int controlPort = 1;
         boolean notEnd = true;
         String statusCode;
         boolean clientgo = true;
@@ -25,33 +25,32 @@ class ftp_client {
         if (sentence.startsWith("connect")) {
             String serverName = tokens.nextToken(); // pass the connect command
             serverName = tokens.nextToken();
-            port1 = Integer.parseInt(tokens.nextToken());
+            controlPort = Integer.parseInt(tokens.nextToken());
             System.out.println("You are connected to " + serverName);
 
-            Socket ControlSocket = new Socket(serverName, port1);
+            Socket ControlSocket = new Socket(serverName, controlPort);
 
             while (isOpen && clientgo) {
 
-                DataOutputStream outToServer =
-                        new DataOutputStream(ControlSocket.getOutputStream());
+                DataOutputStream outToServer = new DataOutputStream(ControlSocket.getOutputStream());
 
                 DataInputStream inFromServer = new DataInputStream(new BufferedInputStream(ControlSocket.getInputStream()));
 
                 sentence = inFromUser.readLine();
 
+
                 if (sentence.equals("list:")) {
 
-                    port = port + 2;
-                    outToServer.writeBytes(port + " " + sentence + " " + '\n');
+                    int dataPort = controlPort + 2;
+                    outToServer.writeBytes(dataPort + " " + sentence + " " + '\n');
 
-                    ServerSocket welcomeData = new ServerSocket(port);
+                    ServerSocket welcomeData = new ServerSocket(dataPort);
                     Socket dataSocket = welcomeData.accept();
 
                     DataInputStream inData = new DataInputStream(new BufferedInputStream(dataSocket.getInputStream()));
                     while (notEnd) {
-                        modifiedSentence = inData.readUTF();
-               ........................................
-	       ........................................
+                        String serverOut = inData.readUTF();
+                        System.out.println(serverOut);
                     }
 
 
@@ -66,4 +65,3 @@ class ftp_client {
         }
     }
 }
-		....................................................

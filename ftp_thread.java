@@ -1,3 +1,6 @@
+import java.net.*;
+import java.io.*;
+import java.util.*;
 
 final class ftp_thread implements Runnable{
 
@@ -5,7 +8,7 @@ final class ftp_thread implements Runnable{
 
     // Constructor
     // pass the control connection socket in
-    public HttpRequest(Socket socket) throws Exception {
+    public ftp_thread(Socket socket) throws Exception {
         this.controlConnection = socket;
     }
 
@@ -13,35 +16,35 @@ final class ftp_thread implements Runnable{
     public void run(){
         try{
             processCommand();
-        } catch (Exeption e){
+        } catch (Exception e){
             System.out.println(e);
         }
     }
 
     // this will watch the control connection and execute the commands
-    private void processCommand(){
+    private void processCommand() throws Exception{
 
         // wrap input and output in buffered streams
-        DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-        BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+        DataOutputStream outToClient = new DataOutputStream(controlConnection.getOutputStream());
+        BufferedReader inFromClient = new BufferedReader(new InputStreamReader(controlConnection.getInputStream()));
 
         // read input from user
         while(true){
 
-            fromClient = inFromClient.readLine();
+            String fromClient = inFromClient.readLine();
 
             StringTokenizer tokens = new StringTokenizer(fromClient);
-            frstln = tokens.nextToken();
-            port = Integer.parseInt(frstln);
+            String frstln = tokens.nextToken();
+            int port = Integer.parseInt(frstln);
 
-            clientCommand = tokens.nextToken();
+            String clientCommand = tokens.nextToken();
 
             // each command should create a data socket and execute the command
 
             // list command
             if (clientCommand.equals("list:")) {
 
-                Socket dataSocket = new Socket(connectionSocket.getInetAddress(), port);
+                Socket dataSocket = new Socket(controlConnection.getInetAddress(), port);
                 DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
                 //TODO print list
