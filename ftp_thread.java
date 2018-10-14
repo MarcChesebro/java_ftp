@@ -50,12 +50,15 @@ final class ftp_thread implements Runnable{
                 DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
                 //TODO print list
-                File folder = new File(".");
+                File folder = new File("./media");
                 String[] files = folder.list();
-                for(String file : files){
-                    dataOutToClient.write(file.getName());
+                if (files != null) {
+                    for (String file : files) {
+                        dataOutToClient.writeBytes(file);
+                    }
+                }else{
+                    dataOutToClient.writeBytes("There are no files");
                 }
-                
                 dataSocket.close();
                 System.out.println("Data Socket closed");
             }

@@ -30,11 +30,11 @@ class ftp_client {
 
             Socket ControlSocket = new Socket(serverName, controlPort);
 
+            DataOutputStream outToServer = new DataOutputStream(ControlSocket.getOutputStream());
+
+            DataInputStream inFromServer = new DataInputStream(new BufferedInputStream(ControlSocket.getInputStream()));
+
             while (isOpen && clientgo) {
-
-                DataOutputStream outToServer = new DataOutputStream(ControlSocket.getOutputStream());
-
-                DataInputStream inFromServer = new DataInputStream(new BufferedInputStream(ControlSocket.getInputStream()));
 
                 sentence = inFromUser.readLine();
 
@@ -47,12 +47,13 @@ class ftp_client {
                     ServerSocket welcomeData = new ServerSocket(dataPort);
                     Socket dataSocket = welcomeData.accept();
 
-                    DataInputStream inData = new DataInputStream(new BufferedInputStream(dataSocket.getInputStream()));
-                    while (notEnd) {
-                        String serverOut = inData.readUTF();
-                        System.out.println(serverOut);
-                    }
+                    BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
 
+                    String line = inData.readLine();
+                    while(line != null){
+                        System.out.println(line);
+                        line = inData.readLine();
+                    }
 
                     welcomeData.close();
                     dataSocket.close();
