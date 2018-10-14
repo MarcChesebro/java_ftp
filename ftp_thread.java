@@ -65,11 +65,25 @@ final class ftp_thread implements Runnable{
 
 
             if (clientCommand.equals("retr:")) {
+	      Socket out = new Socket(controlConnection.getInetAddress(), port);
+	      DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
+	     
+	      String nextFile = tokens.nextToken();
 
+	      out = new FileInputStream(nextFile);
+	      sendFile(out,dataOutToClient);
+	      out.close;
             }
 
             if (clientCommand.equals("stor:")) {
+	      Socket in = new Socket(controlConnection.getInetAddress(), port);
+	      DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
+	      
+	      String nextFile = tokens.nextToken();
 
+	      in = new FileInputStream(nextFile);
+	      sendFile(in,dataOutToClient);
+	      in.close;
             }
 
             if (clientCommand.equals("quit:")) {
