@@ -125,5 +125,7 @@ final class ftp_thread implements Runnable {
 		break;
             }
         }
+
+        controlConnection.close();
     }
 }
