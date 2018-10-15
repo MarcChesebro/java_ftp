@@ -4,6 +4,7 @@ import java.util.*;
 
 final class ftp_thread implements Runnable {
     private static int threadCount;
+    private int user;
     private Socket controlConnection;
     private String statusOk = "200 OK\n";
     private String statusMissing = "550 File Not Found\n";
@@ -29,6 +30,7 @@ final class ftp_thread implements Runnable {
         // wrap input and output in buffered streams
         DataOutputStream outToClient = new DataOutputStream(controlConnection.getOutputStream());
         BufferedReader inFromClient = new BufferedReader(new InputStreamReader(controlConnection.getInputStream()));
+	user = threadCount;
 	System.out.println("Client" + threadCount++ + " has connected!");
         // read input from user
         while (true) {
@@ -37,7 +39,6 @@ final class ftp_thread implements Runnable {
             if (fromClient == null){
                 break;
             }
-
             StringTokenizer tokens = new StringTokenizer(fromClient);
             String frstln = tokens.nextToken();
             int port = Integer.parseInt(frstln);
@@ -47,7 +48,7 @@ final class ftp_thread implements Runnable {
             // each command should create a data socket and execute the command
 
 
-            System.out.println(clientCommand);
+            System.out.println("Client" + user + ": " + clientCommand);
             // list command
             if (clientCommand.equals("list:")) {
 
@@ -94,7 +95,7 @@ final class ftp_thread implements Runnable {
                     line = fileOut.readLine();
                 }
                 dataSocket.close();
-		        fileOut.close();
+		fileOut.close();
             }
 
             if (clientCommand.equals("stor:")) {
@@ -113,12 +114,15 @@ final class ftp_thread implements Runnable {
                     toFile.newLine();
                     line = inData.readLine();
                 }
+		dataOutToClient.close();
+		inData.close();
                 toFile.close();
                 dataSocket.close();
             }
 
             if (clientCommand.equals("quit:")) {
-                break;
+                System.out.println("Client" + user + " has disconnected.");
+		break;
             }
         }
     }

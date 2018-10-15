@@ -33,7 +33,7 @@ class ftp_client {
             System.out.println("\nWhat would you like to do: \n" + commands);
             sentence = inFromUser.readLine();
 
-            while (!sentence.startsWith("quit")) {
+            while (true) {
 
                 if (sentence.equals("list:")) {
 
@@ -57,7 +57,6 @@ class ftp_client {
                         continue;
 
                     }
-
                     BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
 
                     String line = inData.readLine();
@@ -98,6 +97,7 @@ class ftp_client {
                     }
 
 
+		    System.out.println("Retrieving file...");
                     BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
                     BufferedWriter toFile = new BufferedWriter(new FileWriter(filename));
                     String line = inData.readLine();
@@ -109,6 +109,7 @@ class ftp_client {
                     toFile.close();
                     welcomeData.close();
                     dataSocket.close();
+		    System.out.println("File Retrieved!");
 
 
                 } else if (sentence.startsWith("stor:")) {
@@ -117,6 +118,7 @@ class ftp_client {
 
                     outToServer.writeBytes(dataPort + " " + sentence + " " + '\n');
 
+		    System.out.println("Uploading File...");
                     ServerSocket welcomeData = new ServerSocket(dataPort);
                     Socket dataSocket = welcomeData.accept();
                     DataOutputStream dataOutToServer = new DataOutputStream(dataSocket.getOutputStream());
@@ -134,12 +136,15 @@ class ftp_client {
                         line = fileOut.readLine();
                     }
                     dataOutToServer.close();
-
+		    fileOut.close();
                     welcomeData.close();
                     dataSocket.close();
-
-                } else if (sentence.startsWith("quit:")) {
+		    System.out.println("File uploaded!");
+                } else if (sentence.startsWith("quit")) {
+                    int dataPort = controlPort + 2;
+                    outToServer.writeBytes(dataPort + " " + sentence + " " + '\n');
                     System.out.println("Exiting.....");
+		    break;
                 } else{
                     System.out.println("Invalid Command");
                 }
@@ -150,7 +155,7 @@ class ftp_client {
             }
 
             ControlSocket.close();
-            System.out.println("Conection Closed");
+            System.out.println("Control Socket Closed");
         }
     }
 }
