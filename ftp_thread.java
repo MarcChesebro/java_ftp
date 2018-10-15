@@ -85,13 +85,14 @@ final class ftp_thread implements Runnable {
                 outToClient.writeBytes(statusOk);
 
                 BufferedReader fileOut = new BufferedReader(new FileReader("./media/" + filename));
-
                 String line = fileOut.readLine();
+		//System.out.println(line);
                 while(line != null){
                     dataOutToClient.writeBytes(line + "\n");
                     line = fileOut.readLine();
                 }
                 dataSocket.close();
+		fileOut.close();
             }
 
             if (clientCommand.equals("stor:")) {

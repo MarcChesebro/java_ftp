@@ -63,6 +63,7 @@ class ftp_client {
 
                     String line = inData.readLine();
                     while(line != null){
+						
                         System.out.println(line);
                         line = inData.readLine();
                     }
@@ -100,14 +101,15 @@ class ftp_client {
 
 
                     BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
-
+		    System.out.println(filename);
                     BufferedWriter toFile = new BufferedWriter(new FileWriter(filename));
                     String line = inData.readLine();
                     while(line != null){
-                        toFile.write(line);
-                        line = inData.readLine();
+			toFile.write(line);
+                        toFile.newLine();
+			line = inData.readLine();
                     }
-
+	            toFile.close();
                     welcomeData.close();
                     dataSocket.close();
 
