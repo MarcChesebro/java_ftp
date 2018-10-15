@@ -29,7 +29,7 @@ final class ftp_thread implements Runnable {
         // wrap input and output in buffered streams
         DataOutputStream outToClient = new DataOutputStream(controlConnection.getOutputStream());
         BufferedReader inFromClient = new BufferedReader(new InputStreamReader(controlConnection.getInputStream()));
-	System.out.println("Client" + threadCount++ + " has connected!");
+	    System.out.println("Client" + threadCount++ + " has connected!");
         // read input from user
         while (true) {
 
@@ -121,5 +121,7 @@ final class ftp_thread implements Runnable {
                 break;
             }
         }
+
+        controlConnection.close();
     }
 }
