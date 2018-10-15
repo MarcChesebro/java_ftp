@@ -102,11 +102,11 @@ class ftp_client {
                     BufferedWriter toFile = new BufferedWriter(new FileWriter(filename));
                     String line = inData.readLine();
                     while(line != null){
-			toFile.write(line);
+			            toFile.write(line);
                         toFile.newLine();
-			line = inData.readLine();
+			            line = inData.readLine();
                     }
-	            toFile.close();
+                    toFile.close();
                     welcomeData.close();
                     dataSocket.close();
 
