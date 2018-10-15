@@ -3,7 +3,7 @@ import java.io.*;
 import java.util.*;
 
 final class ftp_thread implements Runnable {
-
+    private static int threadCount;
     private Socket controlConnection;
     private String statusOk = "200 OK\n";
     private String statusMissing = "550 File Not Found\n";
@@ -29,7 +29,7 @@ final class ftp_thread implements Runnable {
         // wrap input and output in buffered streams
         DataOutputStream outToClient = new DataOutputStream(controlConnection.getOutputStream());
         BufferedReader inFromClient = new BufferedReader(new InputStreamReader(controlConnection.getInputStream()));
-
+	System.out.println("Client" + threadCount++ + " has connected!");
         // read input from user
         while (true) {
 
@@ -60,9 +60,11 @@ final class ftp_thread implements Runnable {
                 File folder = new File("./media");
                 String[] files = folder.list();
                 if (files != null) {
+		    dataOutToClient.writeBytes("\nFiles:\n");
                     for (String file : files) {
-                        dataOutToClient.writeBytes(file + " ");
+                        dataOutToClient.writeBytes(file + "\n");
                     }
+		    dataOutToClient.writeBytes("(End of Files)\n");
                 } else {
                     dataOutToClient.writeBytes("There are no files");
                 }

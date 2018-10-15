@@ -10,6 +10,7 @@ class ftp_client {
     public static void main(String[] args) throws Exception {
         String sentence;
         int controlPort = 1;
+	String commands = " list: || retr: file.txt ||stor: file.txt  || close";
 
 
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
@@ -29,8 +30,7 @@ class ftp_client {
 
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(ControlSocket.getInputStream()));
 
-            System.out.println("\nWhat would you like to do: \n" +
-                    " list: file.txt || retr: file.txt ||stor: file.txt  || close");
+            System.out.println("\nWhat would you like to do: \n" + commands);
             sentence = inFromUser.readLine();
 
             while (!sentence.startsWith("quit")) {
@@ -52,8 +52,7 @@ class ftp_client {
                         System.out.println(statusCode);
                         welcomeData.close();
                         dataSocket.close();
-                        System.out.println("\nWhat would you like to do: \n" +
-                                " list: file.txt || retr: file.txt ||stor: file.txt  || close");
+                        System.out.println("\nWhat would you like to do: \n" + commands);
                         sentence = inFromUser.readLine();
                         continue;
 
@@ -93,8 +92,7 @@ class ftp_client {
                         System.out.println(statusCode);
                         welcomeData.close();
                         dataSocket.close();
-                        System.out.println("\nWhat would you like to do next: \n" +
-                                " list: file.txt || retr: file.txt ||stor: file.txt  || quit");
+                        System.out.println("\nWhat would you like to do next: \n" + commands);
                         sentence = inFromUser.readLine();
                         continue;
                     }
@@ -121,8 +119,7 @@ class ftp_client {
                     System.out.println("Invalid Command");
                 }
 
-                System.out.println("\nWhat would you like to do next: \n" +
-                        " list: file.txt || retr: file.txt ||stor: file.txt  || quit");
+                System.out.println("\nWhat would you like to do next: \n" + commands);
                 sentence = inFromUser.readLine();
 
             }
