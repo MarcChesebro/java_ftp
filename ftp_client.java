@@ -101,7 +101,6 @@ class ftp_client {
 
 
                     BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
-		    System.out.println(filename);
                     BufferedWriter toFile = new BufferedWriter(new FileWriter(filename));
                     String line = inData.readLine();
                     while(line != null){

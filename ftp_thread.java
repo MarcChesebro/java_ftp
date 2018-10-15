@@ -61,7 +61,7 @@ final class ftp_thread implements Runnable {
                 String[] files = folder.list();
                 if (files != null) {
                     for (String file : files) {
-                        dataOutToClient.writeBytes(file);
+                        dataOutToClient.writeBytes(file + " ");
                     }
                 } else {
                     dataOutToClient.writeBytes("There are no files");
