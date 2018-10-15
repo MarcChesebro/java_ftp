@@ -2,9 +2,11 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-final class ftp_thread implements Runnable{
+final class ftp_thread implements Runnable {
 
     private Socket controlConnection;
+    private String statusOk = "200 OK\n";
+    private String statusMissing = "550 File Not Found\n";
 
     // Constructor
     // pass the control connection socket in
@@ -13,25 +15,28 @@ final class ftp_thread implements Runnable{
     }
 
     // this runs on start after the thread has been setup
-    public void run(){
-        try{
+    public void run() {
+        try {
             processCommand();
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
     }
 
     // this will watch the control connection and execute the commands
-    private void processCommand() throws Exception{
+    private void processCommand() throws Exception {
 
         // wrap input and output in buffered streams
         DataOutputStream outToClient = new DataOutputStream(controlConnection.getOutputStream());
         BufferedReader inFromClient = new BufferedReader(new InputStreamReader(controlConnection.getInputStream()));
 
         // read input from user
-        while(true){
+        while (true) {
 
             String fromClient = inFromClient.readLine();
+            if (fromClient == null){
+                break;
+            }
 
             StringTokenizer tokens = new StringTokenizer(fromClient);
             String frstln = tokens.nextToken();
@@ -49,6 +54,8 @@ final class ftp_thread implements Runnable{
                 Socket dataSocket = new Socket(controlConnection.getInetAddress(), port);
                 DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
+                outToClient.writeBytes(statusOk);
+
                 //TODO print list
                 File folder = new File("./media");
                 String[] files = folder.list();
@@ -56,7 +63,7 @@ final class ftp_thread implements Runnable{
                     for (String file : files) {
                         dataOutToClient.writeBytes(file);
                     }
-                }else{
+                } else {
                     dataOutToClient.writeBytes("There are no files");
                 }
                 dataSocket.close();
@@ -65,33 +72,34 @@ final class ftp_thread implements Runnable{
 
 
             if (clientCommand.equals("retr:")) {
-	      Socket out = new Socket(controlConnection.getInetAddress(), port);
-	      DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
-	     
-	      String nextFile = tokens.nextToken();
+                Socket dataSocket = new Socket(controlConnection.getInetAddress(), port);
+                DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
-	      out = new FileInputStream(nextFile);
-	      sendFile(out,dataOutToClient);
-	      out.close;
+                String filename = tokens.nextToken();
+                File f = new File("./media/" + filename);
+                if (!f.exists() || f.isDirectory()){
+                    outToClient.writeBytes(statusMissing);
+                    continue;
+                }
+
+                outToClient.writeBytes(statusOk);
+
+                BufferedReader fileOut = new BufferedReader(new FileReader("./media/" + filename));
+
+                String line = fileOut.readLine();
+                while(line != null){
+                    dataOutToClient.writeBytes(line);
+                    line = fileOut.readLine();
+                }
+                dataSocket.close();
             }
 
             if (clientCommand.equals("stor:")) {
-	      Socket in = new Socket(controlConnection.getInetAddress(), port);
-	      DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
-	      
-	      String nextFile = tokens.nextToken();
 
-	      in = new FileInputStream(nextFile);
-	      sendFile(in,dataOutToClient);
-	      in.close;
             }
 
             if (clientCommand.equals("quit:")) {
-
-            }
-
-            if (clientCommand.equals("connect:")) {
-
+                break;
             }
         }
     }

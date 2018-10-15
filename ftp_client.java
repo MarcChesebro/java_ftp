@@ -9,12 +9,7 @@ class ftp_client {
 
     public static void main(String[] args) throws Exception {
         String sentence;
-        String modifiedSentence;
-        boolean isOpen = true;
         int controlPort = 1;
-        boolean notEnd = true;
-        String statusCode;
-        boolean clientgo = true;
 
 
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
@@ -32,20 +27,37 @@ class ftp_client {
 
             DataOutputStream outToServer = new DataOutputStream(ControlSocket.getOutputStream());
 
-            DataInputStream inFromServer = new DataInputStream(new BufferedInputStream(ControlSocket.getInputStream()));
+            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(ControlSocket.getInputStream()));
 
-            while (isOpen && clientgo) {
+            System.out.println("\nWhat would you like to do: \n" +
+                    " list: file.txt || retr: file.txt ||stor: file.txt  || close");
+            sentence = inFromUser.readLine();
 
-                sentence = inFromUser.readLine();
+            while (!sentence.startsWith("quit")) {
 
-                System.out.println(sentence);
                 if (sentence.equals("list:")) {
 
                     int dataPort = controlPort + 2;
+
+
                     outToServer.writeBytes(dataPort + " " + sentence + " " + '\n');
 
                     ServerSocket welcomeData = new ServerSocket(dataPort);
                     Socket dataSocket = welcomeData.accept();
+
+                    // Chesck for status code 200 OK
+                    String statusCode = inFromServer.readLine();
+                    if (!statusCode.startsWith("200")){
+                        // If it was not 200 return bad status code
+                        System.out.println(statusCode);
+                        welcomeData.close();
+                        dataSocket.close();
+                        System.out.println("\nWhat would you like to do: \n" +
+                                " list: file.txt || retr: file.txt ||stor: file.txt  || close");
+                        sentence = inFromUser.readLine();
+                        continue;
+
+                    }
 
                     BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
 
@@ -57,12 +69,65 @@ class ftp_client {
 
                     welcomeData.close();
                     dataSocket.close();
-                    System.out.println("\nWhat would you like to do next: \n retr: file.txt ||stor: file.txt  || close");
 
-                } else if (sentence.startsWith("retr: ")) {
+                } else if (sentence.startsWith("retr:")) {
 
+
+                    int dataPort = controlPort + 2;
+
+
+                    outToServer.writeBytes(dataPort + " " + sentence + " " + '\n');
+
+                    ServerSocket welcomeData = new ServerSocket(dataPort);
+                    Socket dataSocket = welcomeData.accept();
+
+                    StringTokenizer user_tokens = new StringTokenizer(sentence);
+                    user_tokens.nextToken(); // skip command
+                    String filename = user_tokens.nextToken();
+
+                    // Chesck for status code 200 OK
+                    String statusCode = inFromServer.readLine();
+                    if (!statusCode.startsWith("200")){
+                        // If it was not 200 return bad status code
+                        System.out.println(statusCode);
+                        welcomeData.close();
+                        dataSocket.close();
+                        System.out.println("\nWhat would you like to do next: \n" +
+                                " list: file.txt || retr: file.txt ||stor: file.txt  || quit");
+                        sentence = inFromUser.readLine();
+                        continue;
+                    }
+
+
+                    BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
+
+                    BufferedWriter toFile = new BufferedWriter(new FileWriter(filename));
+                    String line = inData.readLine();
+                    while(line != null){
+                        toFile.write(line);
+                        line = inData.readLine();
+                    }
+
+                    welcomeData.close();
+                    dataSocket.close();
+
+
+                } else if (sentence.startsWith("stor:")) {
+
+                } else if (sentence.startsWith("quit:")) {
+                    System.out.println("Exiting.....");
+                } else{
+                    System.out.println("Invalid Command");
                 }
+
+                System.out.println("\nWhat would you like to do next: \n" +
+                        " list: file.txt || retr: file.txt ||stor: file.txt  || quit");
+                sentence = inFromUser.readLine();
+
             }
+
+            ControlSocket.close();
+            System.out.println("Conection Closed");
         }
     }
 }
