@@ -88,7 +88,7 @@ final class ftp_thread implements Runnable {
 
                 String line = fileOut.readLine();
                 while(line != null){
-                    dataOutToClient.writeBytes(line);
+                    dataOutToClient.writeBytes(line + "\n");
                     line = fileOut.readLine();
                 }
                 dataSocket.close();
