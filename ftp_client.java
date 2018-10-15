@@ -140,6 +140,7 @@ class ftp_client {
 
                 } else if (sentence.startsWith("quit:")) {
                     System.out.println("Exiting.....");
+                    break;
                 } else{
                     System.out.println("Invalid Command");
                 }

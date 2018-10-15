@@ -18,9 +18,8 @@ final class ftp_thread implements Runnable {
     public void run() {
         try {
             processCommand();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        } catch (Exception e) {}
+        System.out.println("Client has disconnected!");
     }
 
     // this will watch the control connection and execute the commands
