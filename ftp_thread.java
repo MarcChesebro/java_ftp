@@ -60,11 +60,11 @@ final class ftp_thread implements Runnable {
                 File folder = new File("./media");
                 String[] files = folder.list();
                 if (files != null) {
-		    dataOutToClient.writeBytes("\nFiles:\n");
+		            dataOutToClient.writeBytes("\nFiles:\n");
                     for (String file : files) {
                         dataOutToClient.writeBytes(file + "\n");
                     }
-		    dataOutToClient.writeBytes("(End of Files)\n");
+		            dataOutToClient.writeBytes("(End of Files)\n");
                 } else {
                     dataOutToClient.writeBytes("There are no files");
                 }
@@ -98,7 +98,23 @@ final class ftp_thread implements Runnable {
             }
 
             if (clientCommand.equals("stor:")) {
+                Socket dataSocket = new Socket(controlConnection.getInetAddress(), port);
+                DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
+                outToClient.writeBytes(statusOk);
+
+                String filename = tokens.nextToken();
+
+                BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
+                BufferedWriter toFile = new BufferedWriter(new FileWriter("./media/" + filename));
+                String line = inData.readLine();
+                while(line != null){
+                    toFile.write(line);
+                    toFile.newLine();
+                    line = inData.readLine();
+                }
+                toFile.close();
+                dataSocket.close();
             }
 
             if (clientCommand.equals("quit:")) {

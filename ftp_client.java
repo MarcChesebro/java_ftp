@@ -10,7 +10,7 @@ class ftp_client {
     public static void main(String[] args) throws Exception {
         String sentence;
         int controlPort = 1;
-	String commands = " list: || retr: file.txt ||stor: file.txt  || close";
+	    String commands = " list: || retr: file.txt ||stor: file.txt  || quit";
 
 
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
@@ -112,6 +112,31 @@ class ftp_client {
 
 
                 } else if (sentence.startsWith("stor:")) {
+                    int dataPort = controlPort + 2;
+
+
+                    outToServer.writeBytes(dataPort + " " + sentence + " " + '\n');
+
+                    ServerSocket welcomeData = new ServerSocket(dataPort);
+                    Socket dataSocket = welcomeData.accept();
+                    DataOutputStream dataOutToServer = new DataOutputStream(dataSocket.getOutputStream());
+
+
+                    StringTokenizer user_tokens = new StringTokenizer(sentence);
+                    user_tokens.nextToken(); // skip command
+                    String filename = user_tokens.nextToken();
+
+                    BufferedReader fileOut = new BufferedReader(new FileReader(filename));
+                    String line = fileOut.readLine();
+
+                    while(line != null){
+                        dataOutToServer.writeBytes(line + "\n");
+                        line = fileOut.readLine();
+                    }
+                    dataOutToServer.close();
+
+                    welcomeData.close();
+                    dataSocket.close();
 
                 } else if (sentence.startsWith("quit:")) {
                     System.out.println("Exiting.....");
